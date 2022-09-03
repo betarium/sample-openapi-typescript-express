@@ -11,4 +11,5 @@ repositories {
 
 dependencies {
     implementation 'org.openapitools:openapi-generator-gradle-plugin:6.0.1'
+    implementation 'org.openapitools:openapi-generator-cli:6.0.1'
 }

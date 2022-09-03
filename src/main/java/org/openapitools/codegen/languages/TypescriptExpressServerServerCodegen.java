@@ -30,7 +30,6 @@ import org.openapitools.codegen.*;
 import org.openapitools.codegen.meta.features.DocumentationFeature;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
-import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
 import org.openapitools.codegen.templating.mustache.IndentedLambda;
 import org.openapitools.codegen.utils.ModelUtils;
@@ -38,7 +37,9 @@ import org.openapitools.codegen.utils.ModelUtils;
 import java.io.File;
 import java.util.*;
 
-public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodegen {
+public class TypescriptExpressServerServerCodegen extends AbstractTypeScriptClientCodegen {
+    public static final String PROJECT_NAME = "typescript-express-server";
+
     public static final String NPM_REPOSITORY = "npmRepository";
     public static final String WITH_INTERFACES = "withInterfaces";
     public static final String USE_SINGLE_REQUEST_PARAMETER = "useSingleRequestParameter";
@@ -74,7 +75,7 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
     protected boolean packageAsSourceOnlyLibrary = false;
 
 
-    public TypeScriptFetchClientCodegen() {
+    public TypescriptExpressServerServerCodegen() {
         super();
 
         modifyFeatureSet(features -> features.includeDocumentationFeatures(DocumentationFeature.Readme));
@@ -83,8 +84,8 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
         // at the moment
         importMapping.clear();
 
-        outputFolder = "generated-code/typescript-fetch";
-        embeddedTemplateDir = templateDir = "typescript-fetch";
+        outputFolder = "generated-code/" + PROJECT_NAME;
+        embeddedTemplateDir = templateDir = PROJECT_NAME;
 
         this.apiTemplateFiles.put("apis.mustache", ".ts");
 
@@ -101,13 +102,18 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
     }
 
     @Override
+    public CodegenType getTag() {
+        return CodegenType.SERVER;
+    }
+
+    @Override
     public String getName() {
-        return "typescript-fetch";
+        return "typescript-express-server";
     }
 
     @Override
     public String getHelp() {
-        return "Generates a TypeScript client library using Fetch API (beta).";
+        return "Generates a typescript-express-server server.";
     }
 
     public String getNpmRepository() {
@@ -129,6 +135,7 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
     public Boolean getStringEnums() {
         return this.stringEnums;
     }
+
     public void setStringEnums(Boolean stringEnums) {
         this.stringEnums = stringEnums;
     }
@@ -443,8 +450,10 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
     }
 
     @Override
-    public ExtendedCodegenProperty fromProperty(String name, Schema p, boolean required) {
-        CodegenProperty cp = super.fromProperty(name, p, required);
+//    public ExtendedCodegenProperty fromProperty(String name, Schema p, boolean required) {
+    public ExtendedCodegenProperty fromProperty(String name, Schema p) {
+//        CodegenProperty cp = super.fromProperty(name, p, required);
+        CodegenProperty cp = super.fromProperty(name, p);
         return new ExtendedCodegenProperty(cp);
     }
 
@@ -510,12 +519,14 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
                 }
 
                 if (!op.hasReturnPassthroughVoid) {
-                    Schema responseSchema = unaliasSchema(ModelUtils.getSchemaFromResponse(methodResponse));
+//                    Schema responseSchema = unaliasSchema(ModelUtils.getSchemaFromResponse(methodResponse));
+                    Schema responseSchema = unaliasSchema(ModelUtils.getSchemaFromResponse(methodResponse), importMapping);
                     ExtendedCodegenProperty cp = null;
                     if (op.returnPassthrough instanceof String && cm != null) {
                         cp = (ExtendedCodegenProperty) this.processCodeGenModel(cm).vars.get(1);
                     } else if (responseSchema != null) {
-                        cp = fromProperty("response", responseSchema, false);
+//                        cp = fromProperty("response", responseSchema, false);
+                        cp = fromProperty("response", responseSchema);
                         this.processCodegenProperty(cp, "", null);
                     }
 
@@ -936,7 +947,8 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
     private static boolean itemsAreUniqueId(CodegenProperty items) {
         if (items.items != null) {
             return itemsAreUniqueId(items.items);
-        };
+        }
+
         if (items.vendorExtensions.get(X_IS_UNIQUE_ID) instanceof Boolean) {
             return Boolean.TRUE.equals(items.vendorExtensions.get(X_IS_UNIQUE_ID));
         }
@@ -946,14 +958,16 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
     private static boolean itemsAreNullable(CodegenProperty items) {
         if (items.items != null) {
             return itemsAreNullable(items.items);
-        };
+        }
+
         return items.isNullable;
     }
 
     private static String getItemsDataType(CodegenProperty items) {
         if (items.items != null) {
             return getItemsDataType(items.items);
-        };
+        }
+
         return items.dataType;
     }
 
@@ -962,15 +976,15 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
         public boolean isUniqueId; // this parameter represents a unique id (x-isUniqueId: true)
 
         public boolean itemsAreUniqueId() {
-            return TypeScriptFetchClientCodegen.itemsAreUniqueId(this.items);
+            return TypescriptExpressServerServerCodegen.itemsAreUniqueId(this.items);
         }
 
         public boolean itemsAreNullable() {
-            return TypeScriptFetchClientCodegen.itemsAreNullable(this.items);
+            return TypescriptExpressServerServerCodegen.itemsAreNullable(this.items);
         }
 
         public String getItemsDataType() {
-            return TypeScriptFetchClientCodegen.getItemsDataType(this.items);
+            return TypescriptExpressServerServerCodegen.getItemsDataType(this.items);
         }
 
         public boolean isDateType() {
@@ -1107,15 +1121,15 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
         public boolean isReservedRecordField;
 
         public boolean itemsAreUniqueId() {
-            return TypeScriptFetchClientCodegen.itemsAreUniqueId(this.items);
+            return TypescriptExpressServerServerCodegen.itemsAreUniqueId(this.items);
         }
 
         public boolean itemsAreNullable() {
-            return TypeScriptFetchClientCodegen.itemsAreNullable(this.items);
+            return TypescriptExpressServerServerCodegen.itemsAreNullable(this.items);
         }
 
         public String getItemsDataType() {
-            return TypeScriptFetchClientCodegen.getItemsDataType(this.items);
+            return TypescriptExpressServerServerCodegen.getItemsDataType(this.items);
         }
 
         public boolean isDateType() {
