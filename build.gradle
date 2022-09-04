@@ -5,6 +5,10 @@ plugins {
 group 'org.openapitools.codegen.languages'
 version '1.0-SNAPSHOT'
 
+apply plugin: 'application'
+
+mainClassName = 'org.openapitools.codegen.OpenAPIGenerator'
+
 repositories {
     mavenCentral()
 }

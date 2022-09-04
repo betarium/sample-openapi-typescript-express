@@ -93,7 +93,7 @@ public class TypescriptExpressServerServerCodegen extends AbstractTypeScriptClie
 
         supportModelPropertyNaming(CodegenConstants.MODEL_PROPERTY_NAMING_TYPE.camelCase);
         this.cliOptions.add(new CliOption(NPM_REPOSITORY, "Use this property to set an url your private npmRepo in the package.json"));
-        this.cliOptions.add(new CliOption(WITH_INTERFACES, "Setting this property to true will generate interfaces next to the default class implementations.", SchemaTypeUtil.BOOLEAN_TYPE).defaultValue(Boolean.FALSE.toString()));
+        this.cliOptions.add(new CliOption(WITH_INTERFACES, "Setting this property to true will generate interfaces next to the default class implementations.", SchemaTypeUtil.BOOLEAN_TYPE).defaultValue(Boolean.TRUE.toString()));
         this.cliOptions.add(new CliOption(CodegenConstants.USE_SINGLE_REQUEST_PARAMETER, CodegenConstants.USE_SINGLE_REQUEST_PARAMETER_DESC, SchemaTypeUtil.BOOLEAN_TYPE).defaultValue(Boolean.TRUE.toString()));
         this.cliOptions.add(new CliOption(PREFIX_PARAMETER_INTERFACES, "Setting this property to true will generate parameter interface declarations prefixed with API class name to avoid name conflicts.", SchemaTypeUtil.BOOLEAN_TYPE).defaultValue(Boolean.FALSE.toString()));
         this.cliOptions.add(new CliOption(WITHOUT_RUNTIME_CHECKS, "Setting this property to true will remove any runtime checks on the request and response payloads. Payloads will be casted to their expected types.", SchemaTypeUtil.BOOLEAN_TYPE).defaultValue(Boolean.FALSE.toString()));
@@ -1273,6 +1273,9 @@ public class TypescriptExpressServerServerCodegen extends AbstractTypeScriptClie
         boolean hasReturnPassthroughVoid, returnTypeSupportsEntities, returnTypeIsModel, returnTypeIsArray;
         String returnTypeAlternate, returnBaseTypeAlternate, returnPassthrough;
 
+        public String httpMethodLower;
+        public String pathServer;
+
         public ExtendedCodegenOperation(CodegenOperation o) {
             super();
 
@@ -1342,6 +1345,8 @@ public class TypescriptExpressServerServerCodegen extends AbstractTypeScriptClie
             this.operationIdLowerCase = o.operationIdLowerCase;
             this.operationIdCamelCase = o.operationIdCamelCase;
             this.operationIdSnakeCase = o.operationIdSnakeCase;
+            this.httpMethodLower = o.httpMethod.toLowerCase(Locale.ROOT);
+            this.pathServer = o.path.replaceAll("\\{(\\w+)\\}", ":$1");
         }
 
         @Override
